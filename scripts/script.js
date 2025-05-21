@@ -116,7 +116,7 @@ function desenharPeca() {
   for (let linha = 0; linha < pecaAtual.length; linha++) {
     for (let coluna = 0; coluna < pecaAtual[linha].length; coluna++) {
       if (pecaAtual[linha][coluna]) {
-        desenharBloco(coluna + pecaX, linha + pecaY, "blue");
+        desenharBloco(coluna + pecaX, linha + pecaY, "purple");
       }
     }
   }
@@ -128,9 +128,11 @@ function moverPecaBaixo() {
     pecaAtual = gerarNovaPeca();
     pecaX = Math.floor(colunas / 2) - Math.floor(pecaAtual[0].length / 2);
     pecaY = 0;
-    if (verificarFimDeJogo()) {
+    if (verificarFimDeJogo() && !gameOver) {
       gameOver = true;
       alert("Fim de jogo!");
+      window.location.href = "tetris.html";
+      return;
     }
   } else {
     pecaY++;
@@ -185,7 +187,7 @@ function inicializarPecasDisponiveis() {
     peca.shape.forEach((linha) => {
       linha.forEach((bloco) => {
         const blocoDiv = document.createElement("div");
-        blocoDiv.style.backgroundColor = bloco ? "blue" : "white";
+        blocoDiv.style.backgroundColor = bloco ? "purple" : "white";
         pecaDiv.appendChild(blocoDiv);
       });
     });
@@ -224,7 +226,7 @@ function fixarPeca() {
   for (let linha = 0; linha < pecaAtual.length; linha++) {
     for (let coluna = 0; coluna < pecaAtual[linha].length; coluna++) {
       if (pecaAtual[linha][coluna]) {
-        tabuleiro[linha + pecaY][coluna + pecaX] = "blue";
+        tabuleiro[linha + pecaY][coluna + pecaX] = "purple";
       }
     }
   }
