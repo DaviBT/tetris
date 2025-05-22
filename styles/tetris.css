@@ -9,8 +9,8 @@
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   /* background-color: #ede0f5; */
-  /* background-image: url(../images/tetrisParalax.jpg); */
-  background-image: url(../images/tijolos-coloridos.jpg);
+  background-image: url(../images/tetrisParalax.jpg);
+  /* background-image: url(../images/tijolos-coloridos.jpeg); */
   background-repeat: no-repeat;
   background-size: cover;
   color: #333;
