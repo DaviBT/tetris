@@ -68,7 +68,7 @@ h1{
   background-repeat: no-repeat;
   background-size: cover;
   background-position: bottom ; 
-  height: 800px;
+  height: 100vh;
 }
 
 /* Conteúdo Principal */
