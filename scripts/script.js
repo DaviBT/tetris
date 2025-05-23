@@ -1,16 +1,21 @@
+// Seleciona o canvas e configura o contexto 2D para desenhar
 const canvas = document.getElementById("tetris");
 const contexto = canvas.getContext("2d");
+
+// Define constantes do jogo
 const tamanhoBloco = 30;
 const linhas = 20;
 const colunas = 10;
 const tabuleiro = [];
 
+// Variáveis do jogo
 let pecaAtual;
 let intervalo;
 let pontuacao = 0;
 let pecaX, pecaY;
 let gameOver = false;
 
+// Define as peças disponíveis no jogo
 const pecas = [
   { shape: [[1, 1, 1, 1]], name: "I" },
   {
@@ -57,20 +62,21 @@ const pecas = [
   },
 ];
 
+// Carrega pontuação salva do navegador
 function inicializarPontuacao() {
   const pontuacaoSalva = localStorage.getItem("pontuacao");
-
   if (pontuacaoSalva !== null) {
     pontuacao = parseInt(pontuacaoSalva);
   }
-
   document.getElementById("pontuacaoValor").textContent = pontuacao;
 }
 
+// Salva pontuação no navegador
 function salvarPontuacao() {
   localStorage.setItem("pontuacao", pontuacao);
 }
 
+// Inicializa tabuleiro vazio
 function inicializarTabuleiro() {
   for (let linha = 0; linha < linhas; linha++) {
     tabuleiro[linha] = [];
@@ -80,23 +86,15 @@ function inicializarTabuleiro() {
   }
 }
 
+// Desenha um bloco na posição (x, y)
 function desenharBloco(x, y, cor) {
   contexto.fillStyle = cor;
-  contexto.fillRect(
-    x * tamanhoBloco,
-    y * tamanhoBloco,
-    tamanhoBloco,
-    tamanhoBloco
-  );
+  contexto.fillRect(x * tamanhoBloco, y * tamanhoBloco, tamanhoBloco, tamanhoBloco);
   contexto.strokeStyle = "black";
-  contexto.strokeRect(
-    x * tamanhoBloco,
-    y * tamanhoBloco,
-    tamanhoBloco,
-    tamanhoBloco
-  );
+  contexto.strokeRect(x * tamanhoBloco, y * tamanhoBloco, tamanhoBloco, tamanhoBloco);
 }
 
+// Desenha todas as peças fixas no tabuleiro
 function desenharTabuleiro() {
   for (let linha = 0; linha < linhas; linha++) {
     for (let coluna = 0; coluna < colunas; coluna++) {
@@ -107,11 +105,13 @@ function desenharTabuleiro() {
   }
 }
 
+// Sorteia uma nova peça aleatoriamente
 function gerarNovaPeca() {
   const indice = Math.floor(Math.random() * pecas.length);
   return pecas[indice].shape;
 }
 
+// Desenha a peça atual na tela
 function desenharPeca() {
   for (let linha = 0; linha < pecaAtual.length; linha++) {
     for (let coluna = 0; coluna < pecaAtual[linha].length; coluna++) {
@@ -122,6 +122,7 @@ function desenharPeca() {
   }
 }
 
+// Move a peça para baixo
 function moverPecaBaixo() {
   if (verificarColisao(0, 1)) {
     fixarPeca();
@@ -139,6 +140,7 @@ function moverPecaBaixo() {
   }
 }
 
+// Verifica se o topo do tabuleiro está ocupado
 function verificarFimDeJogo() {
   for (let coluna = 0; coluna < colunas; coluna++) {
     if (tabuleiro[0][coluna]) {
@@ -148,6 +150,7 @@ function verificarFimDeJogo() {
   return false;
 }
 
+// Remove linhas completas e atualiza pontuação
 function limparLinhasCompletas() {
   let linhasEliminadas = 0;
   for (let linha = linhas - 1; linha >= 0; linha--) {
@@ -163,12 +166,14 @@ function limparLinhasCompletas() {
   salvarPontuacao();
 }
 
+// Limpa a tela e redesenha tudo
 function desenhar() {
   contexto.clearRect(0, 0, canvas.width, canvas.height);
   desenharTabuleiro();
   desenharPeca();
 }
 
+// Loop principal do jogo
 function loopJogo() {
   moverPecaBaixo();
   desenhar();
@@ -177,6 +182,7 @@ function loopJogo() {
   }
 }
 
+// Cria miniaturas das peças para visualização
 function inicializarPecasDisponiveis() {
   const pecasDiv = document.getElementById("pecas");
   pecas.forEach((peca, indice) => {
@@ -192,6 +198,8 @@ function inicializarPecasDisponiveis() {
       });
     });
     pecasDiv.appendChild(pecaDiv);
+
+    // Permite selecionar manualmente uma peça
     pecaDiv.addEventListener("click", () => {
       pecaAtual = pecas[indice].shape;
       pecaX = Math.floor(colunas / 2) - Math.floor(pecaAtual[0].length / 2);
@@ -200,13 +208,13 @@ function inicializarPecasDisponiveis() {
   });
 }
 
+// Verifica colisão ao mover ou girar a peça
 function verificarColisao(deslocX, deslocY) {
   for (let linha = 0; linha < pecaAtual.length; linha++) {
     for (let coluna = 0; coluna < pecaAtual[linha].length; coluna++) {
       if (pecaAtual[linha][coluna]) {
         const novoX = coluna + pecaX + deslocX;
         const novoY = linha + pecaY + deslocY;
-
         if (
           novoX < 0 ||
           novoX >= colunas ||
@@ -218,10 +226,10 @@ function verificarColisao(deslocX, deslocY) {
       }
     }
   }
-
   return false;
 }
 
+// Fixa a peça no tabuleiro
 function fixarPeca() {
   for (let linha = 0; linha < pecaAtual.length; linha++) {
     for (let coluna = 0; coluna < pecaAtual[linha].length; coluna++) {
@@ -230,10 +238,10 @@ function fixarPeca() {
       }
     }
   }
-
   limparLinhasCompletas();
 }
 
+// Gira a peça atual no sentido horário
 function rotacionarPeca() {
   const novaPeca = [];
   for (let coluna = 0; coluna < pecaAtual[0].length; coluna++) {
@@ -248,6 +256,7 @@ function rotacionarPeca() {
   }
 }
 
+// Captura teclas pressionadas e move/gira a peça
 document.addEventListener("keydown", function (event) {
   if (event.key === "ArrowLeft" && !verificarColisao(-1, 0)) {
     pecaX--;
@@ -257,11 +266,12 @@ document.addEventListener("keydown", function (event) {
     moverPecaBaixo();
   } else if (event.key === "ArrowUp") {
     rotacionarPeca();
-    event.preventDefault(); /* evita que a pagina suba */
+    event.preventDefault();
   }
   desenhar();
 });
 
+// Inicializa o jogo
 inicializarTabuleiro();
 inicializarPontuacao();
 pecaAtual = gerarNovaPeca();
